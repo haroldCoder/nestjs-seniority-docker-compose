@@ -1,0 +1,1 @@
+export * from './prisma-recipe-to-recipe-entity.mapper'

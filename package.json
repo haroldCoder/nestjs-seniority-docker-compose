@@ -72,7 +72,8 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@core/(.*)$": "<rootDir>/core/$1",
-      "^@users/(.*)$": "<rootDir>/modules/users/$1"
+      "^@users/(.*)$": "<rootDir>/modules/users/$1",
+      "^@recipes/(.*)$": "<rootDir>/modules/recipes/$1"
     }
   }
 }

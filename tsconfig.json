@@ -31,6 +31,9 @@
       "@users/*": [
         "./src/modules/users/*"
       ],
+      "@recipes/*": [
+        "./src/modules/recipes/*"
+      ]
     }
   }
 }
