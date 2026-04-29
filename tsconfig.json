@@ -33,6 +33,9 @@
       ],
       "@recipes/*": [
         "./src/modules/recipes/*"
+      ],
+      "@follows/*": [
+        "./src/modules/follows/*"
       ]
     }
   }
