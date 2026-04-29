@@ -1,4 +1,5 @@
-import { Controller, Post, Delete, Get, Body, Param, ParseIntPipe, UseFilters } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   FollowUserUseCase,
   UnfollowUserUseCase,
@@ -6,10 +7,9 @@ import {
   GetFollowingUseCase,
 } from '@follows/application/use-cases';
 import { CreateFollowDto } from '../dtos';
-import { ConvertCreateFollowDtoToFollowEntityMapper } from '../mappers';
 import { FollowsExceptionFilter } from '../filters';
 
-@Controller('follows')
+@Controller()
 @UseFilters(FollowsExceptionFilter)
 export class FollowController {
   constructor(
@@ -19,23 +19,23 @@ export class FollowController {
     private readonly getFollowingUseCase: GetFollowingUseCase,
   ) { }
 
-  @Post()
-  async follow(@Body() createFollowDto: CreateFollowDto) {
+  @MessagePattern({ cmd: 'follow_user' })
+  async follow(@Payload() createFollowDto: CreateFollowDto) {
     return this.followUserUseCase.execute(createFollowDto.followerId, createFollowDto.followingId);
   }
 
-  @Delete()
-  async unfollow(@Body() createFollowDto: CreateFollowDto) {
+  @MessagePattern({ cmd: 'unfollow_user' })
+  async unfollow(@Payload() createFollowDto: CreateFollowDto) {
     return this.unfollowUserUseCase.execute(createFollowDto.followerId, createFollowDto.followingId);
   }
 
-  @Get(':userId/followers')
-  async getFollowers(@Param('userId', ParseIntPipe) userId: number) {
+  @MessagePattern({ cmd: 'get_followers' })
+  async getFollowers(@Payload() userId: number) {
     return this.getFollowersUseCase.execute(userId);
   }
 
-  @Get(':userId/following')
-  async getFollowing(@Param('userId', ParseIntPipe) userId: number) {
+  @MessagePattern({ cmd: 'get_following' })
+  async getFollowing(@Payload() userId: number) {
     return this.getFollowingUseCase.execute(userId);
   }
 }

@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Body, Param, ParseIntPipe, UseFilters } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateRecipeUseCase, GetRecipesUseCase, GetRecipeByIdUseCase } from '@recipes/application/use-cases';
 import { CreateRecipeDto } from '../dtos';
 import { ConvertCreateRecipeDtoToRecipeEntityMapper } from '../mappers';
 import { RecipesExceptionFilter } from '../filters';
 
-@Controller('recipes')
+@Controller()
 @UseFilters(RecipesExceptionFilter)
 export class RecipeController {
   constructor(
@@ -13,19 +14,19 @@ export class RecipeController {
     private readonly getRecipeByIdUseCase: GetRecipeByIdUseCase,
   ) { }
 
-  @Post()
-  async create(@Body() createRecipeDto: CreateRecipeDto) {
+  @MessagePattern({ cmd: 'create_recipe' })
+  async create(@Payload() createRecipeDto: CreateRecipeDto) {
     const recipe = ConvertCreateRecipeDtoToRecipeEntityMapper.toDomain(createRecipeDto);
     return this.createRecipeUseCase.execute(recipe);
   }
 
-  @Get()
+  @MessagePattern({ cmd: 'get_recipes' })
   async findAll() {
     return this.getRecipesUseCase.execute();
   }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
+  @MessagePattern({ cmd: 'get_recipe_by_id' })
+  async findOne(@Payload() id: number) {
     return this.getRecipeByIdUseCase.execute(id);
   }
 }
